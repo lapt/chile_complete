@@ -12,6 +12,7 @@ def main():
     for seed in seeds:
         id_user = int(seed[0]['id'])
         set_seed_user(cn_sql, id_user)
+        print "Proceed id: " + str(id_user)
     pass
 
 
