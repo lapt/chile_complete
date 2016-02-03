@@ -157,7 +157,7 @@ def get_follower_ids(gdb, centre):
             get_user(gdb, fid)
     except Exception, error:
         print 'Error: '
-        print error
+        print error.reason
         return "Error in code"
 
     return "Finish run"
