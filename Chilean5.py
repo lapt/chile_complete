@@ -5,10 +5,10 @@ from Geolocation.User_location import *
 __author__ = 'luisangel'
 
 FOLLOWERS_OF_FOLLOWERS_LIMIT = 3000000
-DEPTH = 1
+
 SEED = "StefanKramerS"
 BD_JSON = "../../twitter-users"
-FID = 0
+
 enc = lambda x: x.encode('ascii', errors='ignore')
 
 chilean_cities_cache = []
@@ -61,78 +61,67 @@ def get_user(gdb, id_user):
     user = {'id': id_user}
 
     try:
-        user['screen_name'] = u.screen_name
+        user['screen_name'] = unicode(u.screen_name).encode('utf-8') if u.screen_name is not None else ''
     except AttributeError:
-        user['screen_name'] = None
-    user['screen_name'] = unicode(user['screen_name']).encode('utf-8') if user['screen_name'] is not None else ''
+        user['screen_name'] = ''
 
     try:
-        user['time_zone'] = u.time_zone
+        user['time_zone'] = unicode(u.time_zone).encode('utf-8') if u.time_zone is not None else ''
     except AttributeError:
-        user['time_zone'] = None
-    user['time_zone'] = unicode(user['time_zone']).encode('utf-8') if user['time_zone'] is not None else ''
+        user['time_zone'] = ''
 
     try:
-        user['name'] = u.name
+        user['name'] = unicode(u.name).encode('utf-8') if u.name is not None else ''
     except AttributeError:
-        user['name'] = None
-    user['name'] = unicode(user['name']).encode('utf-8') if user['name'] is not None else ''
+        user['name'] = ''
 
     user['followers_count'] = u.followers_count
 
     user['geo_enabled'] = u.geo_enabled
 
     try:
-        user['description'] = u.description
+        user['description'] = unicode(u.description).encode('utf-8') if u.description is not None else ''
     except AttributeError:
-        user['description'] = None
-    user['description'] = unicode(user['description']).encode('utf-8') if user['description'] is not None else ''
+        user['description'] = ''
 
     user['tweet_chile'] = 0
 
     try:
-        user['location'] = u.location
+        user['location'] = unicode(u.location).encode('utf-8') if u.location is not None else ''
     except AttributeError:
-        user['location'] = None
-    user['location'] = unicode(user['location']).encode('utf-8') if user['location'] is not None else ''
+        user['location'] = ''
 
     user['friends_count'] = u.friends_count
 
     user['verified'] = u.verified
 
     try:
-        user['entities'] = u.entities
+        user['entities'] = unicode(u.entities).encode('utf-8') if u.entities is not None else ''
     except AttributeError:
-        user['entities'] = None
-    user['entities'] = unicode(user['entities']).encode('utf-8') if user['entities'] is not None else ''
+        user['entities'] = ''
 
     try:
-        user['utc_offset'] = u.utc_offset
+        user['utc_offset'] = unicode(u.utc_offset).encode('utf-8') if u.utc_offset is not None else ''
     except AttributeError:
-        user['utc_offset'] = None
-    user['utc_offset'] = unicode(user['utc_offset']).encode('utf-8') if user['utc_offset'] is not None else ''
+        user['utc_offset'] = ''
 
     user['statuses_count'] = u.statuses_count
 
     try:
-        user['lang'] = u.lang
+        user['lang'] = unicode(u.lang).encode('utf-8') if u.lang is not None else ''
     except AttributeError:
-        user['lang'] = None
-    user['lang'] = unicode(user['lang']).encode('utf-8') if user['lang'] is not None else ''
+        user['lang'] = ''
 
     try:
-        user['url'] = u.url
+        user['url'] = unicode(u.url).encode('utf-8') if u.url is not None else ''
     except AttributeError:
-        user['url'] = None
-    user['url'] = unicode(user['url']).encode('utf-8') if user['url'] is not None else ''
+        user['url'] = ''
 
     user['created_at'] = str(u.created_at)
 
     user['listed_count'] = u.listed_count
 
     user['seed'] = 1 if user['screen_name'] == SEED else 0
-
-    user['followers_ids'] = u.followers_ids()
 
     user = is_location(gdb, user, chilean_cities_cache)
 
@@ -144,90 +133,45 @@ def get_user(gdb, id_user):
     return user
 
 
-def get_relation_by_id(gdb, id):
-    query = "MATCH ()-[role:Follower]->() where role.id={id} return role"
-    param = {'id': id}
-    results = gdb.query(query, params=param, data_contents=True)
-    return results.rows
-
-
-def get_follower_ids(gdb, centre, max_depth=1, current_depth=0,
-                     taboo_list=[]):  # AQUI DEBEMOS VERFICAR LA VALIDEZ DE PASAR GBD
-    # print 'current depth: %d, max depth: %d' % (current_depth, max_depth)
-    # print 'taboo list: ', ','.join([ str(i) for i in taboo_list ])
-    if current_depth == max_depth:
-        print 'out of depth'
-        return taboo_list
-
-    if centre in taboo_list:
-        # we've been here before
-        print 'Repeated ID: ' + str(centre)
-        return taboo_list
-    else:
-        taboo_list.append(centre)
+def get_follower_ids(gdb, centre):
 
     try:
 
         user = get_user(gdb, centre)
         if user is None or user['chile'] is False:
-            return taboo_list
+            return "Seed not found"
         print 'user id %s' % str(centre)
-
-        cd = current_depth
 
         ids_loser = get_id_lost_users_sql(gdb)
         set_id_loser = set(ids_loser)
         set_follower_id = set(user['followers_ids'])
         follower_ids = list(set_follower_id - set_id_loser)
-
+        print str(len(follower_ids))
         try:
             start = int(sys.argv[1])
         except IndexError:
             start = 0
         for fid in follower_ids[start:int(FOLLOWERS_OF_FOLLOWERS_LIMIT)]:
-            print "Processing: " + str(start)
+            print "Processing: " + str(start) + ' Fid = ' + str(fid)
             start += 1
-            if start == 12:
-                print "aqui"
-            global FID
-            FID = fid
-            user2 = get_user(gdb, fid)
-
-            if user2 is None or user2['chile'] is False:
-                continue
-
-            if cd + 1 < max_depth:
-                taboo_list = get_follower_ids(gdb, fid, max_depth=max_depth,
-                                              current_depth=cd + 1, taboo_list=taboo_list)
-
-        if cd + 1 < max_depth and len(follower_ids) > FOLLOWERS_OF_FOLLOWERS_LIMIT:
-            print 'No todos los seguidores fueron recuperados para %d.' % centre
-
+            get_user(gdb, fid)
     except Exception, error:
-        print 'Error al recuperar los seguidores de usuario id: ' + str(centre) + " fid = " + str(FID)
+        print 'Error: '
         print error
-        return taboo_list
-        sys.exit(1)
+        return "Error in code"
 
-    return taboo_list
+    return "Finish run"
 
 
 def main():
     screen_name = SEED
-    depth = int(DEPTH)
-
-    if depth < 1 or depth > 3:
-        print 'Depth value %d is not valid. Valid range is 1-3.' % depth
-        sys.exit('Invalid depth argument.')
-
-    print 'Max Depth: %d' % depth
 
     matches = api.lookup_users(screen_names=[screen_name])
 
     if len(matches) == 1:
         gdb = get_connection_sql()
         setup_chilean_cities_cache(gdb)
-        print len(get_follower_ids(gdb, matches[0].id, max_depth=depth))
+        print get_follower_ids(gdb, matches[0].id)
     else:
         print 'Sorry, could not find the Twitter user with screen name: %s' % screen_name
 

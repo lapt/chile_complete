@@ -28,7 +28,6 @@ def is_location(gdb, data={}, cities={}):
         return data
 
     place = data['location']
-    place = u''.join(place).encode('utf-8').strip()
 
     place = clean_string(place)
 

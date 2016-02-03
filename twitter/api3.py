@@ -46,6 +46,11 @@ def get_user_twitter(id_user):
                 print 'Internet. Dormir durante 1 minuto. ' + e.message
                 time.sleep(60)
                 continue
+            if e.reason == "Failed to send request: ('Connection aborted.', gaierror(-3, " \
+                           "'Temporary failure in name resolution'))":
+                print 'Internet. Dormir durante 1 minuto. ' + e.message
+                time.sleep(60)
+                continue
             if e.reason == 'Failed to send request: HTTPSConnectionPool(host=\'api.twitter.com\', port=443): ' \
                            'Read timed out. (read timeout=60)':
                 print 'Internet. Dormir durante 1 minuto. ' + e.message
