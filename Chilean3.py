@@ -1,4 +1,4 @@
-from twitter.api1 import *
+from twitter.api3 import *
 from entities_db.Users import *
 from Geolocation.User_location import *
 
@@ -6,7 +6,7 @@ __author__ = 'luisangel'
 
 FOLLOWERS_OF_FOLLOWERS_LIMIT = 3000000
 DEPTH = 1
-SEED = "TerraChile"
+SEED = "Emol"
 BD_JSON = "../../twitter-users"
 FID = 0
 enc = lambda x: x.encode('ascii', errors='ignore')

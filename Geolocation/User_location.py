@@ -6,26 +6,10 @@ from location_cleaner import *
 from Geolocation.geo_db_connector import *
 from geodict.geodict_lib import get_city_by_name
 
+
 __author__ = 'luisangel'
 
 GEO_NOM = ['scl', 'chile', 'cl', 'chl', 'stgo', 'santiasco']
-
-REGIONES = {'2': 'Antofagasta',
-            '3': 'Atacama',
-            '4': 'Coquimbo',
-            '10': 'Los Lagos',
-            '7': 'Maule',
-            '11': 'Aysen',
-            '15': 'Arica y Parinacota',
-            '9': 'Araucania',
-            '14': 'Los Rios',
-            '12': 'Magallanes',
-            '1': 'Tarapaca',
-            '5': 'Valparaiso',
-            '8': 'Biobio',
-            '6': 'O\'Higgins',
-            '13': 'RM Santiago'
-            }
 
 
 def delete_tildes(s=''):
@@ -38,8 +22,8 @@ def clean_string(text=''):
     return text
 
 
-def is_location(data={}, cities={}):
-    if data['location'] is None:
+def is_location(gdb, data={}, cities={}):
+    if data['location'] is None or len(data['location'].strip()) == 0:
         data['chile'] = False
         return data
 
@@ -52,7 +36,6 @@ def is_location(data={}, cities={}):
         data['chile'] = False
         return data
 
-    gdb = getConnection()
     # =============coordinate====
 
     if hasCoordinates(place) is True:

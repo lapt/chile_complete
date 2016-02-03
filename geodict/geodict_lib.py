@@ -30,7 +30,7 @@ def setup_chilean_cities_cache(connection):
 
 def get_city_by_name(gdb_sql, city_name):
     query = "select country_code, region_code, longitude, latitude " \
-            "from geodict2.cities " \
+            "from cities " \
             "where city_name = %s and country_code = 'cl' and selected=1;"
     try:
         cursor = gdb_sql.cursor()
@@ -47,3 +47,22 @@ def get_city_by_name(gdb_sql, city_name):
     except MySQLdb.Error:
         print "Error: unable to fetch data"
         return -1
+
+
+def get_city_location(gdb_sql, city_name):
+    query = "select country_code, region_code, longitude, latitude " \
+            "from cities " \
+            "where city_name = %s and country_code = 'cl';"
+    try:
+        cursor = gdb_sql.cursor()
+        cursor.execute(query, (city_name,))
+        data = cursor.fetchall()
+        if data is None:
+            return None
+        else:
+            return [[x[0], x[1], x[2], x[3]]
+                    for x in data]
+    except MySQLdb.Error:
+        print "Error: unable to fetch data"
+        return -1
+    pass

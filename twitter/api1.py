@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import tweepy
-from db_mysql_connector.Connection_sql import *
 from entities_db.Users import *
 import time
 
@@ -17,7 +16,7 @@ KEYS = [['NKNCueURlcpitCRUwK0TngfLq', 'HB7aKDAHwBSinXnfU7hKvFUKTpESfMPFm3YKtOyVi
         ['gCrcxyVA0AQUkzlF32J4OoKy9', 'TLl3fJyWL1ULSGPFYfhh9x8qIunKDbfLB1mqoacQJ6A8g6cFSS',
          '126471512-yrwSJN9QVPGafAI4s7Adfu5cKpA5AAnLz4zIWUAx', 'foa09dwa6AXTC0IIzgOslL2UYfEVPd6Px0iDUfr9HkJTn']]
 ID_KEY = 0
-
+ID_BAD = 0
 auth = tweepy.OAuthHandler(KEYS[ID_KEY][0], KEYS[ID_KEY][1])
 auth.set_access_token(KEYS[ID_KEY][2], KEYS[ID_KEY][3])
 api = tweepy.API(auth)
