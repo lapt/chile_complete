@@ -60,6 +60,10 @@ def get_user_twitter(id_user):
                 print 'Internet. Dormir durante 1 minuto. ' + e.message
                 time.sleep(60)
                 continue
+            if e.reason == "Twitter error response: status code = 503":
+                print 'Internet. Dormir durante 1 minuto. ' + e.message
+                time.sleep(60)
+                continue
             if e.message[0]['code'] == 34:
                 print "Not found ApiTwitter id: " + str(id_user)
                 cn = get_connection_sql()
