@@ -123,17 +123,15 @@ def get_user(gdb, id_user):
 
     user['seed'] = 1 if user['screen_name'] == SEED else 0
 
-    while True:
-        try:
-            user = is_location(gdb, user, chilean_cities_cache)
-            break
-        except Exception, error:
-            if error.message == "'NoneType' object has no attribute '__getitem__'":
-                time.sleep(30)
-                continue
-            else:
-                print error.message
-                sys.exit(1)
+    try:
+        user = is_location(gdb, user, chilean_cities_cache)
+    except Exception, error:
+        if error.message == "'NoneType' object has no attribute '__getitem__'":
+            print error.message
+            return None
+        else:
+            print error.message
+            sys.exit(1)
 
     if user['chile'] is True:
         create_user_json(user, user_file_name)
