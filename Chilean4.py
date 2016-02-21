@@ -6,7 +6,7 @@ __author__ = 'luisangel'
 
 FOLLOWERS_OF_FOLLOWERS_LIMIT = 3000000
 
-SEED = "adnradiochile"
+SEED = "tv_mauricio"
 BD_JSON = "../../twitter-users"
 
 enc = lambda x: x.encode('ascii', errors='ignore')
