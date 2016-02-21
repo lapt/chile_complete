@@ -5,7 +5,7 @@ from Geolocation.User_location import *
 __author__ = 'luisangel'
 
 FOLLOWERS_OF_FOLLOWERS_LIMIT = 3000000
-
+# seed
 SEED = "hoytschile"
 BD_JSON = "../../twitter-users"
 
