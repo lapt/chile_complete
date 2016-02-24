@@ -40,6 +40,9 @@ def is_location(gdb, data={}, cities={}):
     if hasCoordinates(place) is True:
         geo = cleanLocationField(place)
         location = getClosestCityAdmins(gdb, geo.getLatitude(), geo.getLongitude(), 100)
+        if str(location[0]).strip() != 'cl':
+            data['chile'] = False
+            return data
         data['country_code'] = location[0]
         data['region_code'] = location[1]
         data['longitude'] = geo.getLongitude()
